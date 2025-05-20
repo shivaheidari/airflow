@@ -1,4 +1,3 @@
-#starting a spark session
 
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler, StringIndexer
@@ -11,19 +10,28 @@ spark = SparkSession.builder \
 
 df = spark.read.csv("Data/dementia_dataset.csv", header=True, inferSchema=True)
 df.show(5)
-categorical_cols = ["M/F", "Hand"]
+
+categorical_cols = ["M/F", "Hand", "Group"]
 
 
 indexers = [StringIndexer(inputCol=col, outputCol=f"{col}_index", handleInvalid="keep") for col in categorical_cols]
 
 
-
+pipeline = Pipeline(stages=indexers)
+indexed_df = pipeline.fit(df).transform(df)
+train , test = indexed_df.randomSplit([0.8, 0.2], seed=42)
 assembler = VectorAssembler(
-    inputCols=["Age", "Visit", "EDUC", "M/F_index", "Hand_index"], 
+    inputCols=["Age", "Visit", "EDUC", "M/F_index", "Hand_index", "ASF", "nWBV"], 
     outputCol="features"
 )
 
-lr = LogisticRegression(featuresCol="features", labelCol="Group")
 
-pipeline = Pipeline(stages=[indexers, assembler, lr])
 
+lr = LogisticRegression(featuresCol="features", labelCol="Group_index")
+
+pipeline = Pipeline(stages=[assembler, lr])
+
+model = pipeline.fit(train)
+
+predictions = model.transform(test)
+predictions.select("features", "Group_index", "prediction", "probability").show()
