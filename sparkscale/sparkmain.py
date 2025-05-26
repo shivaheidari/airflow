@@ -4,9 +4,11 @@ from pyspark.ml.feature import VectorAssembler, StringIndexer
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 
+
 spark = SparkSession.builder \
     .appName("SparkML-Practice") \
     .getOrCreate()
+
 
 df = spark.read.csv("Data/dementia_dataset.csv", header=True, inferSchema=True)
 df.show(5)
@@ -35,3 +37,5 @@ model = pipeline.fit(train)
 
 predictions = model.transform(test)
 predictions.select("features", "Group_index", "prediction", "probability").show()
+
+
