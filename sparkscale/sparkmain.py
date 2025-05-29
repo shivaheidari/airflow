@@ -15,6 +15,13 @@ df.show(5)
 
 categorical_cols = ["M/F", "Hand", "Group"]
 
+df_filtered = df.filter(df["AGE"] > 30)
+df_grouped = df_filtered.groupBy("department").count()
+
+# Print the logical/physical plan (text-based)
+print(df_grouped.explain(extended=True))  # Shows parsed/logical/optimized/physical plans
+
+
 
 indexers = [StringIndexer(inputCol=col, outputCol=f"{col}_index", handleInvalid="keep") for col in categorical_cols]
 
