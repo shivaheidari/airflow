@@ -3,6 +3,7 @@ from pyspark.ml.feature import VectorAssembler, StringIndexer
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 
+
 spark = SparkSession.builder \
     .appName("SparkML-Practice") \
     .getOrCreate()
