@@ -17,7 +17,13 @@ print(df.columns)
 categorical_cols = ["M/F", "Hand", "Group"]
 indexers = [StringIndexer(inputCol=col, outputCol=f"{col}_index") for col in categorical_cols]
 assembler = VectorAssembler(inputCols=["Age"]+[f"{col}_index" for col in categorical_cols], outputCol="features")
-lr = LogisticRegression(featuresCol="features", labelCol="Group_index")
+lr = LogisticRegression(featuresCol="features", labelCol="Group_index"
+                        , maxIter=100,
+                        regParam=0.01, 
+                        elasticNetParam=0.0, 
+                        tol=1e-6,
+                        fitIntercept=True,
+                        standardization=True)
 
 pipeline = Pipeline(stages=indexers + [assembler, lr])
 model = pipeline.fit(df)
@@ -30,3 +36,4 @@ print("Accuracy", accuracy)
 evaluation_f1 = MulticlassClassificationEvaluator(labelCol="Group_index", predictionCol="prediction", metricName="f1")
 f1 = evaluation_f1.evaluate(predictions)
 print("f1", f1)
+
