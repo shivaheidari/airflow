@@ -31,5 +31,6 @@ accuracy = evaluation_acc.evaluate(predictions)
 print("accuracy", accuracy)
 
 evaluation_f1 = MulticlassClassificationEvaluator(predictionCol="prediction", labelCol="Group_index", metricName="f1")
-evaluation_f1.evaluate(predictions)
-print("f1", evaluation_f1)
+f1 = evaluation_f1.evaluate(predictions)
+print("f1", f1)
+
