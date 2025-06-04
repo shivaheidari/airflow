@@ -6,7 +6,7 @@ from pyspark.ml.classification import LogisticRegression
 
 #spark session
 spark = SparkSession.builder \
-    .appName("SparkML-Practice") \
+    .appName("SparkML-LR") \
     .getOrCreate()
 
 
@@ -18,7 +18,7 @@ categorical_cols = ["M/F", "Hand", "Group"]
 indexers = [StringIndexer(inputCol=col, outputCol=f"{col}_index") for col in categorical_cols]
 assembler = VectorAssembler(inputCols=["Age"]+[f"{col}_index" for col in categorical_cols], outputCol="features")
 lr = LogisticRegression(featuresCol="features", labelCol="Group_index"
-                        , maxIter=100,
+                        ,maxIter=100,
                         regParam=0.01, 
                         elasticNetParam=0.0, 
                         tol=1e-6,
